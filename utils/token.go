@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -21,4 +22,35 @@ func GenerateToken(id string) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func DecodeToken(tokenString string) (string, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("Unknown algorithm")
+		}
+		return secret, nil
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		id, exists := claims["id"]
+
+		if !exists {
+			return "", errors.New("Id doesn't exist")
+		}
+
+		idStr, ok := id.(string)
+
+		if !ok {
+			return "", errors.New("Couldn't cast id to string")
+		}
+
+		return idStr, nil
+	}
+
+	return "", errors.New("Invalid token")
 }
