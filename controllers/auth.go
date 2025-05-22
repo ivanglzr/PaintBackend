@@ -115,3 +115,63 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSONResponse(w, 201, "User created")
 }
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	idRaw := r.Context().Value("id")
+
+	if idRaw == nil {
+		utils.JSONResponse(w, 400, "Missing id")
+		return
+	}
+
+	id, ok := idRaw.(string)
+
+	if !ok {
+		utils.JSONResponse(w, 500, "An error ocurred while deleting the user")
+	}
+
+	var body models.DeleteUserBody
+
+	err := json.NewDecoder(r.Body).Decode(&body)
+
+	if err != nil {
+		utils.JSONResponse(w, 400, "Invalid data")
+		return
+	}
+
+	row := db.DB.QueryRow("SELECT password FROM users WHERE id = $1", id)
+
+	var hash string
+
+	err = row.Scan(&hash)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			utils.JSONResponse(w, 404, "User not found")
+			return
+		}
+
+		utils.JSONResponse(w, 500, "An error ocurred while deleting the user")
+		return
+	}
+
+	password := body.Password
+
+	isPasswordValid := utils.ComparePassword(hash, password)
+
+	if !isPasswordValid {
+		utils.JSONResponse(w, 403, "Deletion unauthorized")
+		return
+	}
+
+	_, err = db.DB.Exec("DELETE FROM users WHERE id = $1", id)
+
+	if err != nil {
+		utils.JSONResponse(w, 500, "An error ocurred while deleting the user")
+		return
+	}
+
+	utils.JSONResponse(w, 200, "User deleted successfully")
+}

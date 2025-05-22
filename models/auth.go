@@ -10,3 +10,7 @@ type User struct {
 	Password string `json:"password"`
 	Fullname string `json:"fullname"`
 }
+
+type DeleteUserBody struct {
+	Password string `json:"password"`
+}
