@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/ivanglzr/PaintBackend/db"
+	"github.com/ivanglzr/PaintBackend/middlewares"
 	"github.com/ivanglzr/PaintBackend/routes"
 )
 
@@ -13,8 +16,14 @@ func main() {
 	db.ConnectDatabase()
 
 	router := mux.NewRouter()
-	routes.SetupRoutes(router)
 
-	log.Println("Server listening on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	router.Use(middlewares.AuthMiddleware)
+
+	routes.AuthRoutes(router)
+
+	port := os.Getenv("PORT")
+	portStr := fmt.Sprintf(":%v", port)
+
+	log.Printf("Server listening on port %s", port)
+	log.Fatal(http.ListenAndServe(portStr, router))
 }
