@@ -3,7 +3,6 @@ package controllers
 import (
 	"database/sql"
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/ivanglzr/PaintBackend/db"
@@ -97,8 +96,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	var id string
 
 	err = db.DB.QueryRow("INSERT INTO users (fullname, email, password) VALUES ($1, $2, $3) RETURNING ID", user.Fullname, user.Email, hash).Scan(&id)
-
-	log.Println(err)
 
 	if err != nil {
 		utils.JSONResponse(w, 500, "An error ocurred while creating the user")
