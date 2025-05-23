@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ivanglzr/PaintBackend/config"
 	"github.com/ivanglzr/PaintBackend/utils"
 )
 
@@ -11,7 +12,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
 
-		if path == "/auth/log-in" || path == "auth/register" {
+		if path == config.Routes.Login || path == config.Routes.Register {
 			next.ServeHTTP(w, r)
 			return
 		}
