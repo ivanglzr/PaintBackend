@@ -53,6 +53,11 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 
 	token, err := utils.GenerateToken(id)
 
+	if err != nil {
+		utils.JSONResponse(w, 500, "An error ocurred while generating the token")
+		return
+	}
+
 	cookie := utils.GenerateCookie(token)
 
 	http.SetCookie(w, &cookie)
