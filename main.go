@@ -17,6 +17,7 @@ func main() {
 
 	router := mux.NewRouter()
 
+	router.Use(middlewares.HeadersMiddleware)
 	router.Use(middlewares.AuthMiddleware)
 
 	routes.AuthRoutes(router)
