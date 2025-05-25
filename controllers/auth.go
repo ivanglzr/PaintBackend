@@ -11,8 +11,6 @@ import (
 )
 
 func LogIn(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	var login models.Login
 
 	err := json.NewDecoder(r.Body).Decode(&login)
@@ -65,8 +63,6 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	var user models.User
 
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -119,8 +115,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	idRaw := r.Context().Value("id")
 
 	if idRaw == nil {

@@ -13,7 +13,6 @@ func JSONResponse(w http.ResponseWriter, statusCode int, message string) {
 	res.Message = message
 
 	w.WriteHeader(statusCode)
-	w.Header().Set("Content-Type", "application/json")
 
 	json.NewEncoder(w).Encode(res)
 }
