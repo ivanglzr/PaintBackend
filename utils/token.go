@@ -27,7 +27,7 @@ func GenerateToken(id string) (string, error) {
 func DecodeToken(tokenString string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("Unknown algorithm")
+			return nil, errors.New("unknown algorithm")
 		}
 		return secret, nil
 	})
@@ -40,17 +40,17 @@ func DecodeToken(tokenString string) (string, error) {
 		id, exists := claims["id"]
 
 		if !exists {
-			return "", errors.New("Id doesn't exist")
+			return "", errors.New("id doesn't exist")
 		}
 
 		idStr, ok := id.(string)
 
 		if !ok {
-			return "", errors.New("Couldn't cast id to string")
+			return "", errors.New("couldn't cast id to string")
 		}
 
 		return idStr, nil
 	}
 
-	return "", errors.New("Invalid token")
+	return "", errors.New("invalid token")
 }
